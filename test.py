@@ -7,9 +7,9 @@ import tensorflow as tf
 import time
 from models import FaceAging
 import sys
-sys.path.append('./tools/')
-from utils import save_images, save_source
-from data_generator import ImageDataGenerator
+# sys.path.append('./tools/')
+from tools.utils import save_images, save_source
+from tools.data_generator import ImageDataGenerator
 
 flags = tf.app.flags
 flags.DEFINE_float("learning_rate", 0.001, "Learning rate")
@@ -105,7 +105,7 @@ def generate_images_from_folder(model, sess, test_data_dir=None, train_data_dir=
     assert train_imgs.shape[0] == (FLAGS.batch_size-1)
 
     for i in range(len(paths)):
-        print i
+        print(i)
         temp = np.reshape(source[i], (1, 128, 128, 3))
         save_source(temp, [1, 1], os.path.join(FLAGS.save_dir, paths[i]))
         images = np.concatenate((temp, train_imgs), axis=0)
@@ -142,7 +142,7 @@ def generate_images(model, sess):
 
 def stable_bn(model, sess, num_iter):
     for iter in range(num_iter):
-        print iter
+        print(iter)
         train_imgs, _ = generator.next_source_imgs(0, 128, batch_size=FLAGS.batch_size)
         for j in range(1, generator.n_classes):
             true_label_fea = generator.label_features_128[j]

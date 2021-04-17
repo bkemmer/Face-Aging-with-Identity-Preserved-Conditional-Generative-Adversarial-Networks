@@ -4,8 +4,8 @@ import os.path
 import random
 from tensorflow.python.training import moving_averages
 import sys
-sys.path.append('./tools/')
-from ops import *
+# sys.path.append('./tools/')
+from tools.ops import *
 
 class FaceAging(object):
     def __init__(self, sess, lr, keep_prob, model_num, batch_size=64, decay_steps=None,
