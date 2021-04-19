@@ -12,6 +12,10 @@ from tools.source_input import load_source_batch3
 from tools.utils import save_images, save_source
 from tools.data_generator import ImageDataGenerator
 
+DATA_PATH = None
+LABELS_PATH = None
+SOURCE_FILE_PATH = None
+
 flags = tf.app.flags
 flags.DEFINE_float("learning_rate", 0.001, "Learning rate")
 
@@ -51,9 +55,12 @@ flags.DEFINE_string("sample_dir", None, "Directory name to save the sample image
 
 flags.DEFINE_string("fea_layer_name", None, "which layer to use for fea_loss")
 
-flags.DEFINE_string("source_file", 'your training file', "source file path")
+flags.DEFINE_string("root_folder", DATA_PATH, "folder that contains images")
 
-flags.DEFINE_string("root_folder", 'CACD_cropped_400/', "folder that contains images")
+flags.DEFINE_string("labels_folder", LABELS_PATH, "folder that contains images labels, \
+                     splitted on 'train_data' and 'test_data' folders")
+
+flags.DEFINE_string("source_file", SOURCE_FILE_PATH, "source file path")
 
 FLAGS = flags.FLAGS
 
@@ -71,7 +78,8 @@ config.gpu_options.allow_growth = True
 
 # Initalize the data generator seperately for the training and validation set
 train_generator = ImageDataGenerator(batch_size=FLAGS.batch_size, height=FLAGS.feature_size, width=FLAGS.feature_size,
-                                     z_dim=FLAGS.noise_dim, scale_size=(FLAGS.image_size, FLAGS.image_size), mode='train')
+                                     z_dim=FLAGS.noise_dim, scale_size=(FLAGS.image_size, FLAGS.image_size), mode='train',
+                                     root_folder=FLAGS.root_folder, label_folder=FLAGS.labels_folder)
 def my_train():
     with tf.Graph().as_default():
         sess = tf.Session(config=config)

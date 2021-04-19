@@ -19,8 +19,8 @@ from PIL import Image
 FLAGS = flags.FLAGS
 
 T = 1
-IM_HEIGHT = 400
-IM_WIDTH = 400
+IM_HEIGHT = 128
+IM_WIDTH = 128
 IM_CHANNELS = 3
 
 
@@ -176,7 +176,7 @@ def get_imgAndlabel_list2(filename, img_folder):
     imgname_lists = []
     label_lists = []
     for i in range(len(lines)):
-        img_name, label = lines[i].split()
+        img_name, label = lines[i].rstrip().split()
         imgname_lists.append(os.path.join(img_folder, img_name))
         label_lists.append(int(label))
 

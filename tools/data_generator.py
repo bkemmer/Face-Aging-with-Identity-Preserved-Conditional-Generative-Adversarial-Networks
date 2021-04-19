@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import random
 from PIL import Image
-import os.path
+import os
 """
 This code is highly influenced by the implementation of:
 https://github.com/joelthchao/tensorflow-finetune-flickr-style/dataset.py
@@ -11,29 +11,29 @@ https://github.com/joelthchao/tensorflow-finetune-flickr-style/dataset.py
 
 class ImageDataGenerator:
     def __init__(self, batch_size, height, width, z_dim, shuffle=True,
-                 scale_size=(64, 64), classes=5, mode='train'):
+                 scale_size=(64, 64), classes=5, mode='train', 
+                 root_folder="", label_folder=""):
 
         # Init params
-        self.root_folder = '/new_disk2/wangzw/tangxu/CACD_cropped_400/'
+        self.root_folder = root_folder
         if mode == 'train':
-            self.file_folder = '/new_disk2/wangzw/tangxu/age_data/train_data/'
+            self.file_folder = os.path.join(label_folder, 'train_data')
             self.class_lists = ['train_age_group_0.txt',
-                               'train_age_group_1.txt',
-                               'train_age_group_2.txt',
-                               'train_age_group_3.txt',
-                               'train_age_group_4.txt']
+                                'train_age_group_1.txt',
+                                'train_age_group_2.txt',
+                                'train_age_group_3.txt',
+                                'train_age_group_4.txt']
             self.pointer = [0, 0, 0, 0, 0]
         else:
-            self.file_folder = '/new_disk2/wangzw/tangxu/age_data/test_data/'
+            self.file_folder = os.path.join(label_folder, 'test_data')
             self.class_lists = ['test_age_group_0.txt',
-                               'test_age_group_1.txt',
-                               'test_age_group_2.txt',
-                               'test_age_group_3.txt',
-                               'test_age_group_4.txt']
+                                'test_age_group_1.txt',
+                                'test_age_group_2.txt',
+                                'test_age_group_3.txt',
+                                'test_age_group_4.txt']
             self.pointer = [0, 0, 0, 0, 0, 0]
 
-        self.train_label_pair = '/home/wangzw/Face-Aging-with-Identity-Preserved-Conditional-Generative-Adversarial-Networks-master/tools' \
-                                '/train_label_pair.txt'
+        self.train_label_pair = os.path.join('tools', 'train_label_pair.txt')
         self.true_labels = []
         self.false_labels = []
         self.images = []
@@ -51,7 +51,7 @@ class ImageDataGenerator:
         self.z_dim = z_dim
         self.img_size = self.height
 
-        # self.read_class_list(self.class_lists)
+        self.read_class_list(self.class_lists)
         if self.shuffle:
             self.shuffle_data(shuffle_all=True)
 
@@ -107,7 +107,7 @@ class ImageDataGenerator:
         Scan the image file and get the image paths and labels
         """
         for i in range(len(class_lists)):
-            f = open(self.file_folder + class_lists[i], 'r')
+            f = open(os.path.join(self.file_folder, class_lists[i]), 'r')
             lines = f.readlines()
             f.close()
             images = []
@@ -405,7 +405,7 @@ class ImageDataGenerator:
 
         return imgs, self.one_hot_labels[index], self.label_features_64[index], \
                self.label_features_64[error_label], self.age_label[index]
-    
+
     def next_target_batch_transfer2(self):
         index = self.true_labels[self.label_pair_index]
         paths = self.images[index][self.pointer[index]:self.pointer[index] + self.batch_size]
@@ -468,7 +468,8 @@ class ImageDataGenerator:
 
 
 def process_target_img(root_folder, img_path, img_size):
-    img = cv2.imread(root_folder + img_path)
+    path = os.path.join(root_folder, img_path)
+    img = cv2.imread(path)
     img = img[:, :, [2, 1, 0]]
     # rescale image
     img = cv2.resize(img, (img_size, img_size))
