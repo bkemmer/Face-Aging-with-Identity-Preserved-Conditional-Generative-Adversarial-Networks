@@ -1,6 +1,6 @@
 .DS_Store
 .vscode/
-*.pyc
+*/*.pyc
 __pycache__/
 env/
 pre_trained/
