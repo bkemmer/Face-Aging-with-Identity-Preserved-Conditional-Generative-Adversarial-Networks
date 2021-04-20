@@ -1,5 +1,6 @@
 import os
 import logging
+
 os.environ['CUDA_DEVICES_ORDER'] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 import numpy as np
@@ -169,7 +170,8 @@ def my_train():
 
 def main(argv=None):
     logging.basicConfig(level=logging.INFO)
-    logging.info(f"Printing flags: {FLAGS}")
+    # logging.info(f"Printing flags: {FLAGS}")
+    print(FLAGS)
     my_train()
 
 
