@@ -13,7 +13,8 @@ class ImageDataGenerator:
     def __init__(self, batch_size, height, width, z_dim, shuffle=True,
                  scale_size=(64, 64), classes=5, mode='train', 
                  root_folder="", label_folder=""):
-
+        logging.info(f"root_folder: {root_folder}")
+        logging.info(f"label_folder: {label_folder}")
         # Init params
         self.root_folder = root_folder
         if mode == 'train':
