@@ -209,6 +209,7 @@ class ImageDataGenerator:
             self.shuffle_data(index)
 
     def process_source_img(self, img_path, image_size, mean, scale):
+        logging.debug(f"img_path: {img_path}")
         img = cv2.imread(self.root_folder + img_path)
         img = img[:, :, [2, 1, 0]]
         # rescale image

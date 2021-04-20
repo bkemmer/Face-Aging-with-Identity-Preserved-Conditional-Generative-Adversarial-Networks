@@ -69,6 +69,8 @@ flags.DEFINE_string("labels_folder", None, "folder that contains images labels, 
 
 flags.DEFINE_string("source_file", None, "source file path")
 
+flags.DEFINE_string("logging_mode", None, "logging mode {info|debug|error}")
+
 FLAGS = flags.FLAGS
 
 # How often to run a batch through the validation model.
@@ -174,9 +176,12 @@ def my_train():
                     samples = sess.run(ge_samples, feed_dict=dict)
                     save_images(samples, [4, 8], './{}/test_{:01d}.jpg'.format(path, j))
 
+
 def main(argv=None):
-    logging.basicConfig(level=logging.INFO)
-    # logging.info(f"Printing flags: {FLAGS}")
+    if FLAGS.logging_mode == "debug":
+        logging.basicConfig(level=logging.DEBUG)
+    elif FLAGS.logging_mode == "info":
+        logging.basicConfig(level=logging.INFO)
     print(FLAGS)
     my_train()
 
