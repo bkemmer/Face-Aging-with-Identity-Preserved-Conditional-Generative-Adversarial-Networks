@@ -168,6 +168,7 @@ def my_train():
                     save_images(samples, [4, 8], './{}/test_{:01d}.jpg'.format(path, j))
 
 def main(argv=None):
+    logging.basicConfig(level=logging.INFO)
     logging.info(f"Printing flags: {FLAGS}")
     my_train()
 
