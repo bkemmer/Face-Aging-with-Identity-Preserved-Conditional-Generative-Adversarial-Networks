@@ -3,6 +3,8 @@ import cv2
 import random
 from PIL import Image
 import os
+import logging
+
 """
 This code is highly influenced by the implementation of:
 https://github.com/joelthchao/tensorflow-finetune-flickr-style/dataset.py
