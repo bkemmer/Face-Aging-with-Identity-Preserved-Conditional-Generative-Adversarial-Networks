@@ -55,12 +55,12 @@ flags.DEFINE_string("sample_dir", None, "Directory name to save the sample image
 
 flags.DEFINE_string("fea_layer_name", None, "which layer to use for fea_loss")
 
-flags.DEFINE_string("root_folder", DATA_PATH, "folder that contains images")
+flags.DEFINE_string("root_folder", None, "folder that contains images")
 
-flags.DEFINE_string("labels_folder", LABELS_PATH, "folder that contains images labels, \
+flags.DEFINE_string("labels_folder", None, "folder that contains images labels, \
                      splitted on 'train_data' and 'test_data' folders")
 
-flags.DEFINE_string("source_file", SOURCE_FILE_PATH, "source file path")
+flags.DEFINE_string("source_file", None, "source file path")
 
 FLAGS = flags.FLAGS
 
