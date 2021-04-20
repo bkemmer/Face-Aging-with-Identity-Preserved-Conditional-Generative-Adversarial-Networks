@@ -1,5 +1,5 @@
-import os.path
 import os
+import logging
 os.environ['CUDA_DEVICES_ORDER'] = "PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 import numpy as np
@@ -168,6 +168,7 @@ def my_train():
                     save_images(samples, [4, 8], './{}/test_{:01d}.jpg'.format(path, j))
 
 def main(argv=None):
+    logging.info(f"Printing flags: {FLAGS}")
     my_train()
 
 
