@@ -12,9 +12,9 @@ from tools.source_input import load_source_batch3
 from tools.utils import save_images, save_source
 from tools.data_generator import ImageDataGenerator
 
-DATA_PATH = None
-LABELS_PATH = None
-SOURCE_FILE_PATH = None
+# DATA_PATH = None
+# LABELS_PATH = None
+# SOURCE_FILE_PATH = None
 
 flags = tf.app.flags
 flags.DEFINE_float("learning_rate", 0.001, "Learning rate")
