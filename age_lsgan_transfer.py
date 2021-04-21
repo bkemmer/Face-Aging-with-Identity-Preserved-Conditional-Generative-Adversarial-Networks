@@ -74,10 +74,10 @@ flags.DEFINE_string("logging_mode", None, "logging mode {info|debug|error}")
 FLAGS = flags.FLAGS
 
 # How often to run a batch through the validation model.
-VAL_INTERVAL = 2 # 5000
+VAL_INTERVAL = 5000
 
 # How often to save a model checkpoint
-SAVE_INTERVAL = 2 # 10000
+SAVE_INTERVAL = 10000
 
 d_iter = 1
 g_iter = 1
@@ -176,7 +176,7 @@ def my_train():
                     samples = sess.run(ge_samples, feed_dict=dict)
                     test_fname = 'test_{:01d}.jpg'.format(j)
                     save_images(samples, [4, 8],
-                                os.path.join(path, test_fname)
+                                os.path.join(path, test_fname))
 
 
 def main(argv=None):
