@@ -74,10 +74,10 @@ flags.DEFINE_string("logging_mode", None, "logging mode {info|debug|error}")
 FLAGS = flags.FLAGS
 
 # How often to run a batch through the validation model.
-VAL_INTERVAL = 5000
+VAL_INTERVAL = 3000
 
 # How often to save a model checkpoint
-SAVE_INTERVAL = 10000
+SAVE_INTERVAL = 2000
 
 d_iter = 1
 g_iter = 1
