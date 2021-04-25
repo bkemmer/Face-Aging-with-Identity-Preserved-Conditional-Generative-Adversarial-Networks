@@ -89,6 +89,8 @@ def my_train():
         # if model.load(FLAGS.checkpoint_dir, model.saver, 'acgan', 399999):
         if model.load(FLAGS.checkpoint_dir, model.saver):
             print(" [*] Load SUCCESS")
+        elif model.load(FLAGS.checkpoint_dir, model.saver, 'acgan', 399999):
+            print(" [*] Load SUCCESS")
         else:
             print(" [!] Load failed...")
 
