@@ -86,7 +86,8 @@ def my_train():
         # Start running operations on the Graph.
         sess.run(tf.global_variables_initializer())
 
-        if model.load(FLAGS.checkpoint_dir, model.saver, 'acgan', 399999):
+        # if model.load(FLAGS.checkpoint_dir, model.saver, 'acgan', 399999):
+        if model.load(FLAGS.checkpoint_dir, model.saver):
             print(" [*] Load SUCCESS")
         else:
             print(" [!] Load failed...")
