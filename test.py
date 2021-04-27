@@ -22,7 +22,7 @@ flags.DEFINE_integer("noise_dim", 256, "the length of the noise vector")
 
 flags.DEFINE_integer("feature_size", 128, "image size after stride 2 conv")
 
-flags.DEFINE_integer("age_groups", 5, "the number of different age groups")
+flags.DEFINE_integer("age_groups", 6, "the number of different age groups")
 
 flags.DEFINE_integer('model_index', None, 'the index of trained model')
 

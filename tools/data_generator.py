@@ -13,7 +13,7 @@ https://github.com/joelthchao/tensorflow-finetune-flickr-style/dataset.py
 
 class ImageDataGenerator:
     def __init__(self, batch_size, height, width, z_dim, shuffle=True,
-                 scale_size=(64, 64), classes=5, mode='train', 
+                 scale_size=(64, 64), classes=6, mode='train', 
                  root_folder="", label_folder=""):
         logging.info(f"root_folder: {root_folder}")
         logging.info(f"label_folder: {label_folder}")
@@ -25,7 +25,8 @@ class ImageDataGenerator:
                                 'train_age_group_1.txt',
                                 'train_age_group_2.txt',
                                 'train_age_group_3.txt',
-                                'train_age_group_4.txt']
+                                'train_age_group_4.txt',
+                                'train_age_group_5.txt',]
             self.pointer = [0, 0, 0, 0, 0]
         else:
             self.file_folder = os.path.join(label_folder, 'test_data')
@@ -33,7 +34,8 @@ class ImageDataGenerator:
                                 'test_age_group_1.txt',
                                 'test_age_group_2.txt',
                                 'test_age_group_3.txt',
-                                'test_age_group_4.txt']
+                                'test_age_group_4.txt',
+                                'test_age_group_5.txt',]
             self.pointer = [0, 0, 0, 0, 0, 0]
 
         self.train_label_pair = os.path.join('tools', 'train_label_pair.txt')
@@ -153,7 +155,7 @@ class ImageDataGenerator:
         if self.pointer[index] >= (self.data_size[index] - self.batch_size):
             self.reset_pointer(index)
 
-        label_list = [0, 1, 2, 3, 4]
+        label_list = [0, 1, 2, 3, 4, 5]
         label_list.remove(index)
         random.shuffle(label_list)
         error_label = label_list[0]
@@ -164,7 +166,7 @@ class ImageDataGenerator:
                self.label_features_64[error_label], index
 
     def mp_next_batch(self):
-        index = random.randint(0, 4)
+        index = random.randint(0, 5)
         paths = self.images[index][self.pointer[index]:self.pointer[index] + self.batch_size]
         # update pointer
         self.pointer[index] += self.batch_size
@@ -176,7 +178,7 @@ class ImageDataGenerator:
         images = [p.get() for p in images]
         images = np.concatenate(images, axis=0)
 
-        label_list = [0, 1, 2, 3, 4]
+        label_list = [0, 1, 2, 3, 4, 5]
         label_list.remove(index)
         random.shuffle(label_list)
         error_label = label_list[0]
@@ -286,7 +288,7 @@ class ImageDataGenerator:
         return imgs
 
     def next_gan_batch(self):
-        index = random.randint(0, 4)
+        index = random.randint(0, 5)
         paths = self.images[index][self.pointer[index]:self.pointer[index] + self.batch_size]
         # Read images
         imgs = np.ndarray([self.batch_size, self.scale_size[0], self.scale_size[1], 3])
@@ -448,7 +450,7 @@ class ImageDataGenerator:
                 self.label_features_64[error_label], self.age_label[index])
 
     def my_next_batch(self):
-        index = random.randint(0, 4)
+        index = random.randint(0, 5)
         paths = self.images[index][self.pointer[index]:self.pointer[index] + self.batch_size]
         self.pointer[index] += self.batch_size
         if self.pointer[index] >= (self.data_size[index] - self.batch_size):
@@ -462,7 +464,7 @@ class ImageDataGenerator:
                 imgs.append(img)
         imgs = np.array(imgs)
 
-        label_list = [0, 1, 2, 3, 4]
+        label_list = [0, 1, 2, 3, 4, 5]
         label_list.remove(index)
         random.shuffle(label_list)
         error_label = label_list[0]
@@ -503,7 +505,7 @@ def process_source_img(root_folder, img_path, mean):
 
 
 def load_target_batch(self):
-    index = random.randint(1, 4)
+    index = random.randint(1, 5)
     paths = self.images[index][self.pointer[index]:self.pointer[index] + self.batch_size]
     # update pointer
     self.pointer[index] += self.batch_size
