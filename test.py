@@ -22,7 +22,7 @@ flags.DEFINE_integer("noise_dim", 256, "the length of the noise vector")
 
 flags.DEFINE_integer("feature_size", 128, "image size after stride 2 conv")
 
-flags.DEFINE_integer("age_groups", 5, "the number of different age groups")
+flags.DEFINE_integer("age_groups", 6, "the number of different age groups")
 
 flags.DEFINE_integer('model_index', None, 'the index of trained model')
 
@@ -44,6 +44,12 @@ flags.DEFINE_string("test_data_dir", './images/test/', "test images")
 
 flags.DEFINE_string("train_data_dir", './images/train/', "train images")
 
+flags.DEFINE_string("root_folder", None, "folder that contains images")
+
+flags.DEFINE_string("labels_folder", None, "folder that contains images labels, \
+                     splitted on 'train_data' and 'test_data' folders")
+
+
 FLAGS = flags.FLAGS
 
 config = tf.ConfigProto()
@@ -51,11 +57,13 @@ config.gpu_options.allow_growth = True
 
 generator = ImageDataGenerator(batch_size=FLAGS.batch_size, height=FLAGS.feature_size, width=FLAGS.feature_size,
                                z_dim=FLAGS.noise_dim, scale_size=(FLAGS.image_size, FLAGS.image_size),
-                               shuffle=False, mode='train')
+                               shuffle=False, mode='train',
+                               root_folder=FLAGS.root_folder, label_folder=FLAGS.labels_folder)
 
 val_generator = ImageDataGenerator(batch_size=FLAGS.batch_size, height=FLAGS.feature_size, width=FLAGS.feature_size,
                                    z_dim=FLAGS.noise_dim, scale_size=(FLAGS.image_size, FLAGS.image_size),
-                                   shuffle=False, mode='test')
+                                   shuffle=False, mode='test',
+                                   root_folder=FLAGS.root_folder, label_folder=FLAGS.labels_folder)
 
 
 def my_train():
@@ -78,7 +86,10 @@ def my_train():
         # Start running operations on the Graph.
         sess.run(tf.global_variables_initializer())
 
-        if model.load(FLAGS.checkpoint_dir, model.saver, 'acgan', 399999):
+        # if model.load(FLAGS.checkpoint_dir, model.saver, 'acgan', 399999):
+        if model.load(FLAGS.checkpoint_dir, model.saver):
+            print(" [*] Load SUCCESS")
+        elif model.load(FLAGS.checkpoint_dir, model.saver, 'acgan', 399999):
             print(" [*] Load SUCCESS")
         else:
             print(" [!] Load failed...")
