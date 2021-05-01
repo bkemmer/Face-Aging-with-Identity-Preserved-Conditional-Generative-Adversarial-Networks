@@ -120,7 +120,7 @@ def generate_images_from_folder(model, sess, test_data_dir=None, train_data_dir=
         temp = np.reshape(source[i], (1, 128, 128, 3))
         save_source(temp, [1, 1], os.path.join(FLAGS.save_dir, paths[i]))
         images = np.concatenate((temp, train_imgs), axis=0)
-        for j in range(1, generator.n_classes):
+        for j in range(0, generator.n_classes):
             true_label_fea = generator.label_features_128[j]
             dict = {
                     model.imgs: images,
