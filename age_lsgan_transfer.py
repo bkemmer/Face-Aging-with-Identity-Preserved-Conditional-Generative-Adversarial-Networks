@@ -77,7 +77,7 @@ FLAGS = flags.FLAGS
 VAL_INTERVAL = 3000
 
 # How often to save a model checkpoint
-SAVE_INTERVAL = 2000
+SAVE_INTERVAL = 1000
 
 d_iter = 1
 g_iter = 1
