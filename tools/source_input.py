@@ -19,8 +19,8 @@ from PIL import Image
 FLAGS = flags.FLAGS
 
 T = 1
-IM_HEIGHT = 128
-IM_WIDTH = 128
+IM_HEIGHT = 125
+IM_WIDTH = 125
 IM_CHANNELS = 3
 
 
@@ -56,10 +56,10 @@ def read_images2(filename_queue):
     image_227 = tf.image.resize_images(image, [227, 227])
     image_227 = tf.cast(image_227, tf.float32) - np.array([104., 117., 124.])
 
-    image_128 = tf.image.resize_images(image, [128, 128])
-    image_128 = tf.cast(image_128, tf.float32) - np.array([104., 117., 124.])
+    image_125 = tf.image.resize_images(image, [125, 125])
+    image_125 = tf.cast(image_125, tf.float32) - np.array([104., 117., 124.])
 
-    return image_227, image_128
+    return image_227, image_125
 
 def read_images3(input_queue):
 
@@ -71,11 +71,11 @@ def read_images3(input_queue):
     image_227 = tf.image.resize_images(image, [227, 227])
     image_227 = tf.cast(image_227, tf.float32) - np.array([104., 117., 124.])
 
-    image_128 = tf.image.resize_images(image, [128, 128])
+    image_125 = tf.image.resize_images(image, [125, 125])
     # image_128 = tf.cast(image_128, tf.float32)
-    image_128 = tf.cast(image_128, tf.float32) - np.array([104., 117., 124.])
+    image_125 = tf.cast(image_125, tf.float32) - np.array([104., 117., 124.])
 
-    return image_227, image_128, label
+    return image_227, image_125, label
 
 def load_source_batch(filename, img_folder, batch_size, img_size, shuffle=True):
     filenames = get_imgAndlabel_list(filename, img_folder)
@@ -113,15 +113,15 @@ def load_source_batch2(filename, img_folder, batch_size, shuffle=True):
         filename_queue = tf.train.string_input_producer(filenames, shuffle=shuffle)
 
         # Even when reading in multiple threads, share the filename queue.
-        image_227, image_128 = read_images2(filename_queue)
-        image_227_batch, image_128_batch = tf.train.shuffle_batch(
-            [image_227, image_128],
+        image_227, image_125 = read_images2(filename_queue)
+        image_227_batch, image_125_batch = tf.train.shuffle_batch(
+            [image_227, image_125],
             batch_size=batch_size,
             num_threads=4,
             capacity=1280,
             min_after_dequeue=640)
 
-        return image_227_batch, image_128_batch
+        return image_227_batch, image_125_batch
 
 def load_source_batch3(filename, img_folder, batch_size, shuffle=True):
 
@@ -135,15 +135,15 @@ def load_source_batch3(filename, img_folder, batch_size, shuffle=True):
     input_queue = tf.train.slice_input_producer([images, labels], shuffle=shuffle)
 
     # Even when reading in multiple threads, share the filename queue.
-    image_227, image_128, label = read_images3(input_queue)
-    image_227_batch, image_128_batch, label_batch = tf.train.shuffle_batch(
-        [image_227, image_128, label],
+    image_227, image_125, label = read_images3(input_queue)
+    image_227_batch, image_125_batch, label_batch = tf.train.shuffle_batch(
+        [image_227, image_125, label],
         batch_size=batch_size,
         num_threads=4,
         capacity=1280,
         min_after_dequeue=640)
 
-    return image_227_batch, image_128_batch, label_batch
+    return image_227_batch, image_125_batch, label_batch
 
 def get_imgAndlabel_list(filename, img_folder):
     """

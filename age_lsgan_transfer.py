@@ -22,11 +22,11 @@ flags.DEFINE_float("learning_rate", 0.001, "Learning rate")
 
 flags.DEFINE_integer("batch_size", 32, "The size of batch images")
 
-flags.DEFINE_integer("image_size", 128, "the size of the generated image")
+flags.DEFINE_integer("image_size", 125, "the size of the generated image")
 
 flags.DEFINE_integer("noise_dim", 256, "the length of the noise vector")
 
-flags.DEFINE_integer("feature_size", 128, "image size after stride 2 conv")
+flags.DEFINE_integer("feature_size", 125, "image size after stride 2 conv")
 
 flags.DEFINE_integer("age_groups", 6, "the number of different age groups")
 
@@ -97,17 +97,17 @@ def my_train():
                         fea_loss_weight=FLAGS.fea_loss_weight, tv_loss_weight=FLAGS.tv_loss_weight)
 
         imgs = tf.placeholder(tf.float32, [FLAGS.batch_size, FLAGS.image_size, FLAGS.image_size, 3])
-        true_label_features_128 = tf.placeholder(tf.float32, [FLAGS.batch_size, 128, 128, FLAGS.age_groups])
+        true_label_features_125 = tf.placeholder(tf.float32, [FLAGS.batch_size, 125, 125, FLAGS.age_groups])
         true_label_features_64 = tf.placeholder(tf.float32, [FLAGS.batch_size, 64, 64, FLAGS.age_groups])
         false_label_features_64 = tf.placeholder(tf.float32, [FLAGS.batch_size, 64, 64, FLAGS.age_groups])
         age_label = tf.placeholder(tf.int32, [FLAGS.batch_size])
 
-        source_img_227, source_img_128, face_label = load_source_batch3(FLAGS.source_file, FLAGS.root_folder, FLAGS.batch_size)
+        source_img_227, source_img_125, face_label = load_source_batch3(FLAGS.source_file, FLAGS.root_folder, FLAGS.batch_size)
 
-        model.train_age_lsgan_transfer(source_img_227, source_img_128, imgs, true_label_features_128,
+        model.train_age_lsgan_transfer(source_img_227, source_img_125, imgs, true_label_features_125,
                                        true_label_features_64, false_label_features_64, FLAGS.fea_layer_name, age_label)
 
-        ge_samples = model.generate_images(imgs, true_label_features_128, reuse=True, mode='train')
+        ge_samples = model.generate_images(imgs, true_label_features_125, reuse=True, mode='train')
 
         # Create a saver.
         model.saver = tf.train.Saver(model.save_d_vars + model.save_g_vars, max_to_keep=200)
@@ -135,10 +135,10 @@ def my_train():
 
         # Loop over max_steps
         for step in range(FLAGS.max_steps):
-            images, t_label_features_128, t_label_features_64, f_label_features_64, age_labels = \
+            images, t_label_features_125, t_label_features_64, f_label_features_64, age_labels = \
                 train_generator.next_target_batch_transfer2()
             dict = {imgs: images,
-                    true_label_features_128: t_label_features_128,
+                    true_label_features_125: t_label_features_125,
                     true_label_features_64: t_label_features_64,
                     false_label_features_64: f_label_features_64,
                     age_label: age_labels
@@ -165,13 +165,13 @@ def my_train():
                 if not os.path.exists(path):
                     os.makedirs(path)
 
-                source = sess.run(source_img_128)
+                source = sess.run(source_img_125)
                 save_source(source, [4, 8], os.path.join(path, 'source.jpg'))
                 for j in range(train_generator.n_classes):
-                    true_label_fea = train_generator.label_features_128[j]
+                    true_label_fea = train_generator.label_features_125[j]
                     dict = {
                             imgs: source,
-                            true_label_features_128: true_label_fea
+                            true_label_features_125: true_label_fea
                             }
                     samples = sess.run(ge_samples, feed_dict=dict)
                     test_fname = 'test_{:01d}.jpg'.format(j)

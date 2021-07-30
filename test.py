@@ -16,11 +16,11 @@ flags.DEFINE_float("learning_rate", 0.001, "Learning rate")
 
 flags.DEFINE_integer("batch_size", 32, "The size of batch images")
 
-flags.DEFINE_integer("image_size", 128, "the size of the generated image")
+flags.DEFINE_integer("image_size", 125, "the size of the generated image")
 
 flags.DEFINE_integer("noise_dim", 256, "the length of the noise vector")
 
-flags.DEFINE_integer("feature_size", 128, "image size after stride 2 conv")
+flags.DEFINE_integer("feature_size", 125, "image size after stride 2 conv")
 
 flags.DEFINE_integer("age_groups", 6, "the number of different age groups")
 
@@ -74,9 +74,9 @@ def my_train():
                         fea_loss_weight=FLAGS.fea_loss_weight, tv_loss_weight=FLAGS.tv_loss_weight)
 
         model.imgs = tf.placeholder(tf.float32, [FLAGS.batch_size, FLAGS.image_size, FLAGS.image_size, 3])
-        model.true_label_features_128 = tf.placeholder(tf.float32, [FLAGS.batch_size, 128, 128, FLAGS.age_groups])
+        model.true_label_features_125 = tf.placeholder(tf.float32, [FLAGS.batch_size, 125, 125, FLAGS.age_groups])
 
-        model.ge_samples = model.generate_images(model.imgs, model.true_label_features_128, stable_bn=False, mode='train')
+        model.ge_samples = model.generate_images(model.imgs, model.true_label_features_125, stable_bn=False, mode='train')
 
         model.get_vars()
 
@@ -104,43 +104,43 @@ def my_train():
 
 def generate_images_from_folder(model, sess, test_data_dir=None, train_data_dir=None):
     if test_data_dir:
-        source, paths = val_generator.load_imgs(test_data_dir, 128)
+        source, paths = val_generator.load_imgs(test_data_dir, 125)
     else:
-        source, paths = val_generator.next_source_imgs(0, 128, batch_size=256)
+        source, paths = val_generator.next_source_imgs(0, 125, batch_size=256)
 
     if train_data_dir:
-        train_imgs, _ = generator.load_imgs(train_data_dir, 128)
+        train_imgs, _ = generator.load_imgs(train_data_dir, 125)
     else:
-        train_imgs, _ = generator.next_source_imgs(0, 128, batch_size=FLAGS.batch_size-1)
+        train_imgs, _ = generator.next_source_imgs(0, 125, batch_size=FLAGS.batch_size-1)
 
     assert train_imgs.shape[0] == (FLAGS.batch_size-1)
 
     for i in range(len(paths)):
         print(i)
-        temp = np.reshape(source[i], (1, 128, 128, 3))
+        temp = np.reshape(source[i], (1, 125, 125, 3))
         save_source(temp, [1, 1], os.path.join(FLAGS.save_dir, paths[i]))
         images = np.concatenate((temp, train_imgs), axis=0)
         for j in range(0, generator.n_classes):
-            true_label_fea = generator.label_features_128[j]
+            true_label_fea = generator.label_features_125[j]
             dict = {
                     model.imgs: images,
-                    model.true_label_features_128: true_label_fea,
+                    model.true_label_features_125: true_label_fea,
                     }
             samples = sess.run(model.ge_samples, feed_dict=dict)
-            image = np.reshape(samples[0, :, :, :], (1, 128, 128, 3))
+            image = np.reshape(samples[0, :, :, :], (1, 125, 125, 3))
             # generator.save_batch(samples, paths, FLAGS.save_dir, index=j, if_target=True)
             save_images(image, [1, 1], os.path.join(FLAGS.save_dir, paths[i] + '_' + str(j) + '.jpg'))
 
 
 
 def generate_images(model, sess):
-    source, paths = val_generator.next_source_imgs(0, 128, batch_size=FLAGS.batch_size)
+    source, paths = val_generator.next_source_imgs(0, 125, batch_size=FLAGS.batch_size)
     time1 = time.time()
     for j in range(1, generator.n_classes):
-        true_label_fea = generator.label_features_128[j]
+        true_label_fea = generator.label_features_125[j]
         dict = {
                 model.imgs: source,
-                model.true_label_features_128: true_label_fea,
+                model.true_label_features_125: true_label_fea,
                 }
         samples = sess.run(model.ge_samples, feed_dict=dict)
         # image = np.reshape(samples[0, :, :, :], (1, 128, 128, 3))
@@ -154,12 +154,12 @@ def generate_images(model, sess):
 def stable_bn(model, sess, num_iter):
     for iter in range(num_iter):
         print(iter)
-        train_imgs, _ = generator.next_source_imgs(0, 128, batch_size=FLAGS.batch_size)
+        train_imgs, _ = generator.next_source_imgs(0, 125, batch_size=FLAGS.batch_size)
         for j in range(1, generator.n_classes):
-            true_label_fea = generator.label_features_128[j]
+            true_label_fea = generator.label_features_125[j]
             dict = {
                 model.imgs: train_imgs,
-                model.true_label_features_128: true_label_fea,
+                model.true_label_features_125: true_label_fea,
             }
             sess.run([model.ge_samples, model.optim], feed_dict=dict)
 

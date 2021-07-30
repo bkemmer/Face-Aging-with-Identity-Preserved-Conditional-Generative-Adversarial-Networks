@@ -131,11 +131,11 @@ class FaceAging(object):
             # if condition is not None:
                 # x = tf.concat([x, condition], axis=3)
 
-            x = tf.nn.relu(self.batch_norm('bn3', conv2d(x, 128, 3, 3, name='conv3'), mode=mode))
+            x = tf.nn.relu(self.batch_norm('bn3', conv2d(x, 125, 3, 3, name='conv3'), mode=mode))
 
             for i in range(n_blocks):
                 with tf.variable_scope('unit_%d' % i):
-                    x = self.residual(x, 3, 128)
+                    x = self.residual(x, 3, 125)
 
             x_shape = x.get_shape().as_list()
             x = deconv2d(x, [x_shape[0], x_shape[1]*2, x_shape[1]*2, 64], 3, 3, name="deconv1")
@@ -159,7 +159,7 @@ class FaceAging(object):
             if condition is not None:
                 x = tf.concat([x, condition], axis=3)
 
-            x = lrelu(self.batch_norm('dis_bn0', conv2d(x, 128, 4, 4, name='dis_1'), mode=mode))
+            x = lrelu(self.batch_norm('dis_bn0', conv2d(x, 125, 4, 4, name='dis_1'), mode=mode))
 
             x = lrelu(self.batch_norm('dis_bn1', conv2d(x, 256, 4, 4, name='dis_2'), mode=mode))
 
@@ -172,11 +172,11 @@ class FaceAging(object):
             return x
 
     # conditional lsgan + batchnorm
-    def train_age_lsgan_transfer(self, source_img_227, source_img_128, imgs, true_label_fea_128, true_label_fea_64,
+    def train_age_lsgan_transfer(self, source_img_227, source_img_125, imgs, true_label_fea_125, true_label_fea_64,
                                  false_label_fea_64, fea_layer_name, age_label):
         """
         :param source_img_227: remove mean and size is 227
-        :param source_img_128: remove mean and size is 128
+        :param source_img_125: remove mean and size is 125
         :param imgs: range in [-1, 1]
         :param true_label_fea: the same size as imgs, has 5 channes
         :param false_label_fea: the same size as imgs, has 5 channels
@@ -197,7 +197,7 @@ class FaceAging(object):
         elif fea_layer_name == 'fc7':
             source_fea = self.fc7
 
-        self.g_source = self.ResnetGenerator(source_img_128, name='generator', condition=true_label_fea_128)
+        self.g_source = self.ResnetGenerator(source_img_125, name='generator', condition=true_label_fea_125)
 
         discriminator = self.PatchDiscriminator
 
@@ -255,9 +255,9 @@ class FaceAging(object):
         self.g_optim = tf.group(*train_ops)
 
 
-    def generate_images(self, source_img_128, true_label_fea, stable_bn=False, reuse=False, mode='test'):
+    def generate_images(self, source_img_125, true_label_fea, stable_bn=False, reuse=False, mode='test'):
 
-        g_source = self.ResnetGenerator(source_img_128, name='generator', condition=true_label_fea,
+        g_source = self.ResnetGenerator(source_img_125, name='generator', condition=true_label_fea,
                                              mode=mode, reuse=reuse)
         if stable_bn:
             train_ops = self._extra_train_ops

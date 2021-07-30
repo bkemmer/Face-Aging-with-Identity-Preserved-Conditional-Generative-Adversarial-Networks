@@ -61,7 +61,7 @@ class ImageDataGenerator:
             self.shuffle_data(shuffle_all=True)
 
         self.get_age_labels()
-        self.label_features_128, _ = self.pre_generate_labels(batch_size, 128, 128)
+        self.label_features_125, _ = self.pre_generate_labels(batch_size, 125, 125)
         self.label_features_64, self.one_hot_labels = self.pre_generate_labels(batch_size, 64, 64)
 
     def __iter__(self):
@@ -314,7 +314,7 @@ class ImageDataGenerator:
 
         return imgs, self.one_hot_labels[index], paths
 
-    def load_imgs(self, data_dir, img_size=128):
+    def load_imgs(self, data_dir, img_size=125):
         paths = os.listdir(data_dir)
         # Read images
         imgs = np.ndarray([len(paths), img_size, img_size, 3])
@@ -353,7 +353,7 @@ class ImageDataGenerator:
         paths = self.images[index][self.pointer[index]:self.pointer[index] + self.batch_size]
         # Read images
         images_227 = np.ndarray([self.batch_size, 227, 227, 3])
-        images_128 = np.ndarray([self.batch_size, 128, 128, 3])
+        images_125 = np.ndarray([self.batch_size, 125, 125, 3])
         for i in range(len(paths)):
             image = cv2.imread(self.root_folder + paths[i])
             image = image[:, :, [2, 1, 0]]
@@ -363,16 +363,16 @@ class ImageDataGenerator:
             img -= self.mean
             images_227[i] = img
 
-            img = cv2.resize(image, (128, 128))
+            img = cv2.resize(image, (125, 125))
             img = img.astype(np.float32)
             img -= self.mean
-            images_128[i] = img
+            images_125[i] = img
         # update pointer
         self.pointer[index] += self.batch_size
         if self.pointer[index] >= (self.data_size[index]- self.batch_size):
             self.reset_pointer(index)
 
-        return images_227, images_128
+        return images_227, images_125
 
     def next_batch_transfer2(self, source_index=0):
         index = self.true_labels[self.label_pair_index]
@@ -389,9 +389,9 @@ class ImageDataGenerator:
         error_label = self.false_labels[self.label_pair_index]
         self.label_pair_index += 1
 
-        images_227, images_128 = self.next_source_imgs2(source_index)
+        images_227, images_125 = self.next_source_imgs2(source_index)
 
-        return imgs, images_227, images_128, self.one_hot_labels[index], self.label_features[index], \
+        return imgs, images_227, images_125, self.one_hot_labels[index], self.label_features[index], \
                self.label_features[error_label], self.age_label[index], index
 
     def next_target_batch_transfer(self):
@@ -427,7 +427,7 @@ class ImageDataGenerator:
         error_label = self.false_labels[self.label_pair_index]
         self.label_pair_index += 1
 
-        return imgs, self.label_features_128[index], self.label_features_64[index], \
+        return imgs, self.label_features_125[index], self.label_features_64[index], \
                self.label_features_64[error_label], self.age_label[index]
 
     def next(self):
@@ -446,7 +446,7 @@ class ImageDataGenerator:
         error_label = self.false_labels[self.label_pair_index]
         self.label_pair_index += 1
 
-        return (imgs, self.label_features_128[index], self.label_features_64[index],
+        return (imgs, self.label_features_125[index], self.label_features_64[index],
                 self.label_features_64[error_label], self.age_label[index])
 
     def my_next_batch(self):
